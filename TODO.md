@@ -4,4 +4,5 @@
 - [x] enemie projectiles
     - [x] projectile trajectory
     - [x] slower
-- [ ] different "wepons" (bigger projectile, circular motion aroud player, garlic)
+- [ ] different "wepons" (bigger projectile, circular motion aroud player, bibile)
+- [x] enemie death animation

@@ -75,8 +75,16 @@ void update(struct App *app) {
         case KEY_F(1):
             app->show_stats = !app->show_stats;
             break;
+        //case 'D':
+        //    start_death_anim(&app->deathanim, 20, 40);
+        //    break;
+        case '1':
+            app->player.wpn = BOOK;
+            break;
         case 'q':
             app->exit = true;
+            break;
+            
     }
 }
 

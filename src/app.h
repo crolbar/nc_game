@@ -17,6 +17,11 @@ enum Direction {
     NONE,
 };
 
+enum Weapon {
+    BLAST,
+    BOOK,
+};
+
 struct Proj {
     int x;
     int y;
@@ -34,6 +39,7 @@ struct Player {
     char p;
     int kills;
     bool alive;
+    enum Weapon wpn;
 };
 
 struct Enemy {
@@ -43,6 +49,19 @@ struct Enemy {
     char *p1;
     bool alive;
     struct timeval last_enemie_move_time;
+};
+
+struct DeathAnim {
+    int x_UL;
+    int y_UL;
+    int x_UR;
+    int y_UR;
+    int x_DL;
+    int y_DL;
+    int x_DR;
+    int y_DR;
+    char p1;
+    bool is;
 };
 
 struct Colors {
@@ -59,6 +78,7 @@ struct App {
     struct Proj *projs;
     struct Enemy *enemies;
     struct Colors colors;
+    struct DeathAnim deathanim;
     int num_projs;
     int num_enemies;
     int prev_char;
@@ -76,5 +96,6 @@ double get_elapsed(struct timeval);
 void render_entity_dir_traject(int entity_y, int entity_x, enum Direction entity_dir);
 void spawn_proj(struct App *app, bool is_from_player, int enemy_index);
 void player_die(struct App *app);
+void start_death_anim(struct DeathAnim *da, int y, int x);
 
 #endif

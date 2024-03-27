@@ -180,7 +180,12 @@ void enemy_spawn_proj(struct App *app) {
             int sei = app->shooter_enemies_indexes[i];
 
             struct Enemy *e = &app->enemies[sei];
+            
+            attron(COLOR_PAIR(app->colors.magenta));
+
             render_entity_dir_traject(e->y, e->x, e->dir);
+            
+            attroff(COLOR_PAIR(app->colors.magenta));
 
             if (time_since_last_shot >= 1.5) {
                 spawn_proj(app, false, sei);

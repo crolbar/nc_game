@@ -40,12 +40,67 @@ void move_proj_in_dir(struct Proj *proj) {
     }
 }
 
+void move_proj_in_circ(struct App *app, struct Proj *proj) {
+    proj->move_delay += 1;
+
+    if (proj->move_delay >= 10) {
+        proj->move_delay = 0;
+        if 
+            (
+                proj->x == app->player.x &&
+                proj->y == app->player.y
+            ) 
+        {
+            proj->y = app->player.y - 4;
+        } else if 
+            (
+                proj->x == app->player.x &&
+                proj->y == app->player.y - 4
+            )
+        {
+            proj->x = app->player.x - 4;
+            proj->y = app->player.y;
+        } else if 
+            (
+                proj->x == app->player.x - 4 &&
+                proj->y == app->player.y
+            )
+        {
+            proj->x = app->player.x;
+            proj->y = app->player.y + 4;
+        } else if 
+            (
+                proj->x == app->player.x &&
+                proj->y == app->player.y + 4
+            )
+        {
+            proj->x = app->player.x + 4;
+            proj->y = app->player.y;
+        } else if 
+            (
+                proj->x == app->player.x + 4 &&
+                proj->y == app->player.y
+            ) 
+        {
+            proj->x = app->player.x;
+            proj->y = app->player.y - 4;
+        } else {
+            proj->x = app->player.x;
+            proj->y = app->player.y;
+        }
+    }
+}
+
 void mvrender_projs(struct App *app) {
     for (int i = 0; i < app->num_projs; i++) {
         struct Proj *proj = &app->projs[i];
 
         if (proj->x || proj->y) {
-            move_proj_in_dir(proj);
+            if (app->player.wpn == BOOK && proj->is_from_player) {
+                move_proj_in_circ(app, proj);
+            } else {
+                move_proj_in_dir(proj);
+            }
 
             int color = (proj->is_from_player) ? app->colors.green : app->colors.red;
 
@@ -88,6 +143,7 @@ void check_for_dead_projs(struct App *app) {
                         proj->alive = false;
                         e->alive = false;
                         app->player.kills++;
+                        start_death_anim(&app->deathanim, e->y, e->x);
                     }
                 }
             } else {

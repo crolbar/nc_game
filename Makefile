@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra
 
-SRCS = src/main.c src/player.c src/proj.c src/update.c src/enemies.c src/app.h
+SRCS = src/main.c src/player.c src/proj.c src/update.c src/enemies.c src/app.h src/deathanim.c
 
 EXEC = build/m
 

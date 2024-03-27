@@ -7,6 +7,7 @@
 #include "player.c"
 #include "proj.c"
 #include "enemies.c"
+#include "deathanim.c"
 
 void init_colors() {
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -75,23 +76,28 @@ struct App init_app() {
             .dir = NONE,
             .p = 'x',
             .alive = true,
+            .wpn = BLAST,
         },
-            .colors = {
-                .red = 1,
-                .yellow = 2,
-                .green = 3,
-                .blue = 4,
-                .magenta = 5,
-                .cyan = 6,
-            },
-            .projs = NULL,
-            .enemies = (struct Enemy*)malloc(sizeof(struct Enemy)),
-            .num_projs = 0,
-            .num_enemies = 0,
-            .prev_char = ' ',
-            .exit = false,
-            .show_stats = true,
-            .shooter_enemies_indexes = {},
+        .deathanim = {
+            .p1 = '#',
+            .is = false,
+        },
+        .colors = {
+            .red = 1,
+            .yellow = 2,
+            .green = 3,
+            .blue = 4,
+            .magenta = 5,
+            .cyan = 6,
+        },
+        .projs = NULL,
+        .enemies = (struct Enemy*)malloc(sizeof(struct Enemy)),
+        .num_projs = 0,
+        .num_enemies = 0,
+        .prev_char = ' ',
+        .exit = false,
+        .show_stats = true,
+        .shooter_enemies_indexes = {},
     };
 
     gettimeofday(&app.start_time, NULL);
@@ -130,6 +136,7 @@ int main() {
             mvprintw(2, 1, "projs: %d", app.num_projs);
             mvprintw(3, 1, "kills: %d", app.player.kills);
             mvprintw(4, 1, "enemies: %d", app.num_enemies);
+            mvprintw(5, 1, "DA: %c", (app.deathanim.is) ? 'y' : 'n');
         }
 
         if (app.player.alive) {
@@ -158,6 +165,7 @@ int main() {
 
             mvrender_projs(&app);
             mvrender_enemies(&app);
+            mvrender_death_anim(&app.deathanim);
 
         } else {
             update_gameover(&app);
