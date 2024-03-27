@@ -64,22 +64,21 @@ void move_in_dir(struct Enemy *e) {
     }
 }
 
-void render_enemies(struct App *app) {
+void mvrender_enemies(struct App *app) {
     attron(COLOR_PAIR(app->colors.red));
 
     for (int i = 0; i < app->num_enemies; i++) {
         struct Enemy *e = &app->enemies[i];
 
 
+        // move
         if (get_elapsed(e->last_enemie_move_time) >= 0.8) {
-            change_dir_rand(&e->dir);
-            //change_dir_player(e, &app->player);
+            //change_dir_rand(&e->dir);
+            change_dir_player(e, &app->player);
             move_in_dir(e);
             
             gettimeofday(&e->last_enemie_move_time, NULL);
         }
-
-        //render_entity_dir_traject(e->y, e->x, e->dir);
 
         mvprintw(e->y, e->x, "%s", e->p1);
         mvprintw(e->y - 1, e->x, "%s", e->p1);
@@ -169,9 +168,32 @@ void spawn_enemie(struct App *app) {
         .x = x,
         .y = y,
     };
-
     gettimeofday(&e->last_enemie_move_time, NULL);
 
-
     app->num_enemies++;
+}
+
+void enemy_spawn_proj(struct App *app) {
+    int time_since_last_shot = get_elapsed(app->last_enemie_shoot_time);
+    if (time_since_last_shot >= 0.5) {
+        for (int i = 0; i < NUM_ENEMIES_SHOOT_AT_A_TIME; i++) {
+            int sei = app->shooter_enemies_indexes[i];
+
+            struct Enemy *e = &app->enemies[sei];
+            render_entity_dir_traject(e->y, e->x, e->dir);
+
+            if (time_since_last_shot >= 1.5) {
+                spawn_proj(app, false, sei);
+            }
+        }
+
+        if (time_since_last_shot >= 1.5) {
+            for (int i = 0; i < NUM_ENEMIES_SHOOT_AT_A_TIME; i++) {
+                int rn = (rand() % (app->num_enemies - 0 + 1)) + 0;
+                app->shooter_enemies_indexes[i] = rn;
+            }
+
+            gettimeofday(&app->last_enemie_shoot_time, NULL);
+        }
+    }
 }

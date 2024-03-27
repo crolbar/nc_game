@@ -1,6 +1,11 @@
 #include <ncurses.h>
 #include "app.h"
 
+void player_die(struct App *app) {
+    app->player.alive = false;
+    gettimeofday(&app->end_time, NULL);
+}
+
 void render_player(struct App *app) {
     switch (app->player.dir) {
         case UP:
@@ -24,7 +29,7 @@ void render_player(struct App *app) {
     mvprintw(app->player.y, app->player.x, "%c", app->player.p);
 }
 
-void check_if_player_alive(struct App *app) {
+void check_for_dead_player(struct App *app) {
     for (int i = 0; i < app->num_enemies; i++) {
         struct Enemy e = app->enemies[i];
         int player_x = app->player.x;
@@ -42,9 +47,7 @@ void check_if_player_alive(struct App *app) {
                 )
            )
         {
-            app->player.alive = false;
-            gettimeofday(&app->end_time, NULL);
+            player_die(app);
         }
     }
 }
-

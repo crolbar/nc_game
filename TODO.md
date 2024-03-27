@@ -1,6 +1,7 @@
 - [x] game over sreen
 - [x] player projectile trajectory
 - [x] if you hit an enemie you die
-- [ ] enemie projectiles
+- [x] enemie projectiles
     - [x] projectile trajectory
+    - [x] slower
 - [ ] different "wepons" (bigger projectile, circular motion aroud player, garlic)

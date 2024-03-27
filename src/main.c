@@ -17,16 +17,14 @@ void init_colors() {
     init_pair(6, COLOR_CYAN, COLOR_BLACK);
 }
 
-    void render_entity_dir_traject
-(
- int entity_y,
- int entity_x,
- enum Direction entity_dir
- ) 
+void render_entity_dir_traject
+    (
+        int entity_y,
+        int entity_x,
+        enum Direction entity_dir
+    ) 
 {
     if (entity_dir == LEFT || entity_dir == RIGHT) {
-        //int dist_to_end = abs(COLS - player_x);
-
         int dist_to_end; 
 
         if (entity_dir == LEFT) {
@@ -70,8 +68,7 @@ void init_colors() {
 }
 
 struct App init_app() {
-    return (struct App)
-    {
+    struct App app = {
         .player = {
             .x = COLS/2,
             .y = LINES/2,
@@ -94,7 +91,14 @@ struct App init_app() {
             .prev_char = ' ',
             .exit = false,
             .show_stats = true,
+            .shooter_enemies_indexes = {},
     };
+
+    gettimeofday(&app.start_time, NULL);
+    gettimeofday(&app.last_enemie_spawn_time, NULL);
+    gettimeofday(&app.last_enemie_shoot_time, NULL);
+
+    return app;
 }
 
 double get_elapsed(struct timeval start_time) {
@@ -118,9 +122,6 @@ int main() {
     init_colors();
 
     struct App app = init_app();
-
-    gettimeofday(&app.start_time, NULL);
-    gettimeofday(&app.last_enemie_spawn_time, NULL);
 
     while (!app.exit) {
         if (app.show_stats) {
@@ -146,14 +147,17 @@ int main() {
 
             render_player(&app);
 
+            // random `NUM_ENEMIES_SHOOT_AT_A_TIME`enemies shoot once a sec
+            enemy_spawn_proj(&app);
+
+            check_for_dead_projs(&app);
+            check_for_dead_player(&app);
+
             remove_dead_projs(&app);
             remove_dead_enemies(&app);
 
-            check_if_player_alive(&app);
-
-            render_projs(&app);
-            render_enemies(&app);
-
+            mvrender_projs(&app);
+            mvrender_enemies(&app);
 
         } else {
             update_gameover(&app);

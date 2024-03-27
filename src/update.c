@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <ncurses.h>
 #include "app.h"
 
@@ -7,6 +6,7 @@ void update(struct App *app) {
 
     switch (ch) {
         case 'k':
+        case 'w':
         case KEY_UP:
             if (app->player.y > 0) app->player.y--;
 
@@ -19,6 +19,7 @@ void update(struct App *app) {
 
             break;
         case 'j':
+        case 's':
         case KEY_DOWN:
             if (app->player.y < LINES - 1) app->player.y++;
 
@@ -31,6 +32,7 @@ void update(struct App *app) {
 
             break;
         case 'h':
+        case 'a':
         case KEY_LEFT:
             if (app->player.x > 0) app->player.x--;
 
@@ -43,6 +45,7 @@ void update(struct App *app) {
 
             break;
         case 'l':
+        case 'd':
         case KEY_RIGHT:
             if (app->player.x < COLS - 1) app->player.x++;
 
@@ -66,22 +69,13 @@ void update(struct App *app) {
         case 'G':
             app->player.y = LINES - 1;
             break;
-        case ' ': 
-            {
-                app->projs = (struct Proj *)realloc(app->projs,(app->num_projs + 1) * sizeof(struct Proj));
-
-                app->projs[app->num_projs].x = app->player.x;
-                app->projs[app->num_projs].y = app->player.y;
-                app->projs[app->num_projs].dir = app->player.dir;
-                app->projs[app->num_projs].p = app->player.p;
-                app->projs[app->num_projs].alive = true;
-
-                app->num_projs++;
-            } break;
-        case 'P':
+        case ' ':
+            spawn_proj(app, true, 0);
+            break;
+        case KEY_F(1):
             app->show_stats = !app->show_stats;
             break;
-        case 'q': // Quit if 'q' is pressed
+        case 'q':
             app->exit = true;
     }
 }
