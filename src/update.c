@@ -70,16 +70,21 @@ void update(struct App *app) {
             app->player.y = LINES - 1;
             break;
         case ' ':
-            spawn_proj(app, true, 0);
+            spawn_proj_player(app);
             break;
         case KEY_F(1):
             app->show_stats = !app->show_stats;
             break;
-        //case 'D':
-        //    start_death_anim(&app->deathanim, 20, 40);
-        //    break;
+        case 'D':
+            //start_death_anim(&app->deathanim, 20, 40);
+            //app->player.kills += 10;
+            break;
         case '1':
-            app->player.wpn = BOOK;
+            if (app->player.wpn == BOOK) {
+                app->player.wpn = BLAST;
+            } else {
+                app->player.wpn = BOOK;
+            }
             break;
         case 'q':
             app->exit = true;

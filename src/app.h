@@ -30,6 +30,7 @@ struct Proj {
     bool alive;
     bool is_from_player;
     int move_delay;
+    int circle_stage;
 };
 
 struct Player {
@@ -89,12 +90,17 @@ struct App {
     struct timeval end_time;
     bool show_stats;
     int shooter_enemies_indexes[NUM_ENEMIES_SHOOT_AT_A_TIME];
+    int book_delay_count;
+    int book_delay_target;
+    int book_count;
+    double enemy_spawn_delay;
+    int next_target_kills;
 };
 
 struct App init_app();
 double get_elapsed(struct timeval);
 void render_entity_dir_traject(int entity_y, int entity_x, enum Direction entity_dir);
-void spawn_proj(struct App *app, bool is_from_player, int enemy_index);
+void spawn_proj_player(struct App *app);
 void player_die(struct App *app);
 void start_death_anim(struct DeathAnim *da, int y, int x);
 

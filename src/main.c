@@ -76,7 +76,7 @@ struct App init_app() {
             .dir = NONE,
             .p = 'x',
             .alive = true,
-            .wpn = BLAST,
+            .wpn = BOOK,
         },
         .deathanim = {
             .p1 = '#',
@@ -98,11 +98,19 @@ struct App init_app() {
         .exit = false,
         .show_stats = true,
         .shooter_enemies_indexes = {},
+        .book_delay_count = 0,
+        .book_delay_target = 10,
+        .enemy_spawn_delay = 1,
+        .book_count = 0,
+        .next_target_kills = 10,
     };
 
     gettimeofday(&app.start_time, NULL);
     gettimeofday(&app.last_enemie_spawn_time, NULL);
     gettimeofday(&app.last_enemie_shoot_time, NULL);
+
+    app.player.wpn = BOOK;
+    spawn_proj_player(&app);
 
     return app;
 }
@@ -137,6 +145,7 @@ int main() {
             mvprintw(3, 1, "kills: %d", app.player.kills);
             mvprintw(4, 1, "enemies: %d", app.num_enemies);
             mvprintw(5, 1, "DA: %c", (app.deathanim.is) ? 'y' : 'n');
+            mvprintw(6, 1, "book_count: %d", app.book_count);
         }
 
         if (app.player.alive) {
@@ -145,8 +154,8 @@ int main() {
 
             erase();
 
-            // spawn_enemie once a second
-            if (get_elapsed(app.last_enemie_spawn_time) >= 1) {
+            // spawn_enemie once a `app.enemy_spawn_delay`
+            if (get_elapsed(app.last_enemie_spawn_time) >= app.enemy_spawn_delay) {
                 spawn_enemie(&app);
 
                 gettimeofday(&app.last_enemie_spawn_time, NULL);
@@ -156,6 +165,29 @@ int main() {
 
             // random `NUM_ENEMIES_SHOOT_AT_A_TIME`enemies shoot once a sec
             enemy_spawn_proj(&app);
+
+            // every 10 kills decrease the spawn delay of enemies and speed up book
+            if  (app.player.kills >= app.next_target_kills) {
+                if (app.player.wpn == BLAST) {
+                    if (app.enemy_spawn_delay != 0.5) {
+                        app.enemy_spawn_delay -= 0.05;
+                    }
+                } else {
+                    if (app.enemy_spawn_delay != 0.05) {
+                        app.enemy_spawn_delay -= 0.05;
+                    }
+
+                    if (app.book_delay_target != 1) {
+                        app.book_delay_target -= 1;
+                    }
+
+                    if (app.book_count < 20) {
+                        spawn_proj_player(&app);
+                    }
+                }
+
+                app.next_target_kills += 10;
+            }
 
             check_for_dead_projs(&app);
             check_for_dead_player(&app);

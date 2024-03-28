@@ -188,7 +188,20 @@ void enemy_spawn_proj(struct App *app) {
             attroff(COLOR_PAIR(app->colors.magenta));
 
             if (time_since_last_shot >= 1.5) {
-                spawn_proj(app, false, sei);
+                app->projs = (struct Proj *)realloc(app->projs, (app->num_projs + 1) * sizeof(struct Proj));
+
+                app->projs[app->num_projs] = (struct Proj){
+                    .x = app->enemies[sei].x,
+                    .y = app->enemies[sei].y,
+                    .dir = app->enemies[sei].dir,
+                    .p = '#',
+                    .alive = true,
+                    .is_from_player = false,
+                    .move_delay = 0,
+                    .circle_stage = -1,
+                };
+
+                app->num_projs++;
             }
         }
 
