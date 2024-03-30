@@ -20,6 +20,8 @@ enum Direction {
 enum Weapon {
     BLAST,
     BOOK,
+    SWORD,
+    NO,
 };
 
 struct Proj {
@@ -52,15 +54,24 @@ struct Enemy {
     struct timeval last_enemie_move_time;
 };
 
+struct Pos {
+    int x;
+    int y;
+};
+
+struct Sword {
+    int size;
+    struct Pos POS[6];
+    char *p1;
+    bool is_swinging;
+    int swing_stage;
+};
+
 struct DeathAnim {
-    int x_UL;
-    int y_UL;
-    int x_UR;
-    int y_UR;
-    int x_DL;
-    int y_DL;
-    int x_DR;
-    int y_DR;
+    struct Pos UL;
+    struct Pos UR;
+    struct Pos DL;
+    struct Pos DR;
     char p1;
     bool is;
 };
@@ -80,6 +91,7 @@ struct App {
     struct Enemy *enemies;
     struct Colors colors;
     struct DeathAnim deathanim;
+    struct Sword sword;
     int num_projs;
     int num_enemies;
     int prev_char;
@@ -103,5 +115,10 @@ void render_entity_dir_traject(int entity_y, int entity_x, enum Direction entity
 void spawn_proj_player(struct App *app);
 void player_die(struct App *app);
 void start_death_anim(struct DeathAnim *da, int y, int x);
+
+struct Selector {
+    WINDOW *windows[3];
+    int selected;
+};
 
 #endif

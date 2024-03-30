@@ -70,21 +70,15 @@ void update(struct App *app) {
             app->player.y = LINES - 1;
             break;
         case ' ':
-            spawn_proj_player(app);
+            if (app->player.wpn == BLAST) {
+                spawn_proj_player(app);
+            } else if (app->player.wpn == SWORD) {
+                app->sword.is_swinging = true;
+                app->sword.swing_stage = 0;
+            }
             break;
         case KEY_F(1):
             app->show_stats = !app->show_stats;
-            break;
-        case 'D':
-            //start_death_anim(&app->deathanim, 20, 40);
-            //app->player.kills += 10;
-            break;
-        case '1':
-            if (app->player.wpn == BOOK) {
-                app->player.wpn = BLAST;
-            } else {
-                app->player.wpn = BOOK;
-            }
             break;
         case 'q':
             app->exit = true;
@@ -104,7 +98,42 @@ void update_gameover(struct App *app) {
         case 'P':
             app->show_stats = !app->show_stats;
             break;
-        case 'q': // Quit if 'q' is pressed
+        case 'q':
+            app->exit = true;
+    }
+}
+
+void update_wpn_sel(struct App *app, int *selected) {
+    int ch = getch();
+
+    switch (ch) {
+        case KEY_F(1):
+            app->show_stats = !app->show_stats;
+            break;
+        case 'h':
+        case KEY_LEFT:
+            if (*selected > 0) { *selected -= 1; }
+            break;
+        case 'l':
+        case KEY_RIGHT:
+            if (*selected < 2) { *selected += 1; }
+            break;
+        case '\n':
+        case ' ':
+            switch (*selected) {
+                case 0:
+                    app->player.wpn = SWORD;
+                    break;
+                case 1:
+                    app->player.wpn = BOOK;
+                    spawn_proj_player(app);
+                    break;
+                case 2:
+                    app->player.wpn = BLAST;
+                    break;
+            }
+            break;
+        case 'q': 
             app->exit = true;
     }
 }

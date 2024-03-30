@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra
 
-SRCS = src/main.c src/player.c src/proj.c src/update.c src/enemies.c src/app.h src/deathanim.c
+SRCS = src/main.c src/player.c src/proj.c src/update.c src/enemies.c src/app.h src/deathanim.c src/book.c src/sword.c
 
 EXEC = build/m
 
@@ -11,7 +11,7 @@ all: $(EXEC)
 
 
 build: $(SRCS)
-	$(CC) $(CFLAGS) -o $(EXEC) src/main.c -l ncurses
+	$(CC) $(CFLAGS) -o $(EXEC) src/main.c -l ncursesw
 
 run:
 	./$(EXEC)
