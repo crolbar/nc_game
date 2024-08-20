@@ -3,15 +3,18 @@ CFLAGS = -Wall -Wextra
 
 SRCS = src/main.c src/player.c src/proj.c src/update.c src/enemies.c src/app.h src/deathanim.c src/book.c src/sword.c
 
-EXEC = build/m
+EXEC = build/nc_game
 
-.PHONY: all clean
+.PHONY: all clean build
 
-all: $(EXEC)
+all: build
 
 
-build: $(SRCS)
+build: $(SRCS) | buildd
 	$(CC) $(CFLAGS) -o $(EXEC) src/main.c -l ncursesw
+
+buildd:
+	mkdir -p build
 
 run:
 	./$(EXEC)
